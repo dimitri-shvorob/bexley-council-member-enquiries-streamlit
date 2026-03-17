@@ -1,20 +1,21 @@
 import altair as alt
-import polars as pl
+import pandas as pd
 import streamlit as st
 
 
 @st.cache_data
 def load_ward_level_data():
-    df = pl.read_parquet(
+    df = pd.read_parquet(
         r"C:\Users\dimit\Documents\GitHub\bexley-member-enquiries-streamlit\data\data.parquet"
     )
-    return df.with_columns(ward_party=pl.col("ward") + "|" + pl.col("party"))
+    df["ward_party"] = df["ward"] + " | " + df["party"]
+    return df
 
 
 df = load_ward_level_data()
 
 # n
-dw1 = df.group_by("ward_party", "party").agg(pl.col("n").sum())
+dw1 = df.groupby(["ward_party", "party"])["n"].sum()
 bars = (
     alt.Chart(dw1, title="Total")
     .mark_bar()
@@ -44,7 +45,7 @@ labels = (
 ch1 = bars + labels
 
 # n - per councillor
-dw2 = df.group_by("ward_party", "party").agg(pl.col("n_scaled").sum())
+dw2 = df.groupby(["ward_party", "party"])["n"].sum()
 bars = (
     alt.Chart(dw2, title="Average (per councillor)")
     .mark_bar()

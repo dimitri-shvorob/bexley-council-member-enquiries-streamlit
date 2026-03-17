@@ -1,18 +1,18 @@
 import altair as alt
-import polars as pl
+import pandas as pd
 import streamlit as st
 
 
 @st.cache_data
 def load_data():
-    return pl.read_parquet(
+    return pd.read_parquet(
         r"C:\Users\dimit\Documents\GitHub\bexley-member-enquiries-streamlit\data\data.parquet"
     )
 
 
 df = load_data()
 
-dg = df.group_by("last_name", "party").agg(pl.col("n").sum())
+dg = df.groupby(["last_name", "party"])["n"].sum()
 bars = (
     alt.Chart(dg)
     .mark_bar()
