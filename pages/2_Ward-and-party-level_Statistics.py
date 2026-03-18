@@ -5,9 +5,7 @@ import streamlit as st
 
 @st.cache_data
 def load_ward_level_data():
-    df = pl.read_parquet(
-        r"C:\Users\dimit\Documents\GitHub\bexley-council-member-enquiries-streamlit\data\data.parquet"
-    )
+    df = pl.read_parquet("data.parquet")
     return df.with_columns(ward_party=pl.col("ward") + "|" + pl.col("party"))
 
 

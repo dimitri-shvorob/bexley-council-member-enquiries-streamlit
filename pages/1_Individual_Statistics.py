@@ -5,9 +5,7 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    return pl.read_parquet(
-        r"C:\Users\dimit\Documents\GitHub\bexley-council-member-enquiries-streamlit\data\data.parquet"
-    )
+    return pl.read_parquet("data.parquet")
 
 
 df = load_data()
