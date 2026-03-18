@@ -2,15 +2,13 @@ from pathlib import Path
 
 import polars as pl
 
-PATH = Path(
-    r"C:\Users\dimit\Documents\GitHub\bexley-council-member-enquiries-streamlit"
-)
+PATH = Path(r"C:\Users\dimit\Documents\GitHub\bexley-council-member-enquiries-streamlit")
 
 x = pl.read_csv(PATH / "councillors.csv")
 
-# get num councillors per ward-party
-g = x.group_by("ward", "party").len().rename({"len": "n_councillors"})
-x = x.join(g, on=["ward", "party"], how="left")
+# get num councillors per ward
+g = x.group_by("ward").len().rename({"len": "n_councillors"})
+x = x.join(g, on = "ward", how = "left")
 
 y0 = pl.read_csv(PATH / "raw data" / "foi 2022-23.csv", try_parse_dates=True)
 y1 = pl.read_csv(PATH / "raw data" / "foi 2024.csv", try_parse_dates=True)
@@ -39,9 +37,10 @@ y = (
 
 # link up ward data, add a scaling factor to address varying ward sizes (2 councillors vs 3)
 z = (
-    x.join(y, on="last_name", how="left")
-    .drop("councillor")
-    .with_columns(n=pl.lit(1), n_scaled=1 / pl.col.n_councillors)
-)
+     x
+     .join(y, on="last_name", how="left").drop("councillor")
+     .with_columns(n = pl.lit(1), n_scaled = 1/pl.col.n_councillors)
+    )
 
-z.write_parquet(PATH / "data.parquet")
+z.write_parquet(PATH / "data" / "data.parquet")
+
