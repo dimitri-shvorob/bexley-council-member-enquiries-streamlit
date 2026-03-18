@@ -44,7 +44,7 @@ ch1 = bars + labels
 # n - per councillor
 dw2 = df.group_by("ward_party", "party").agg(pl.col("n_scaled").sum())
 bars = (
-    alt.Chart(dw2, title="Average (per councillor)")
+    alt.Chart(dw2, title="Average (i.e. per councillor)")
     .mark_bar()
     .encode(
         x=alt.X("n_scaled", axis=alt.Axis(title=None)),
@@ -70,6 +70,8 @@ labels = (
     )
 )
 ch2 = bars + labels
+
+st.write("Ward *and party*, actually.")
 
 st.altair_chart(ch1, use_container_width=True)
 st.altair_chart(ch2, use_container_width=True)
