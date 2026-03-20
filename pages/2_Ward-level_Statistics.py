@@ -4,12 +4,14 @@ import streamlit as st
 
 
 @st.cache_data
-def load_ward_level_data():
-    df = pl.read_parquet("data.parquet")
+def load_data():
+    df = pl.read_parquet(
+        r"data.parquet"
+    )
     return df.with_columns(ward_party=pl.col("ward") + "|" + pl.col("party"))
 
 
-df = load_ward_level_data()
+df = load_data()
 
 # n
 dw1 = df.group_by("ward_party", "party").agg(pl.col("n").sum())
@@ -71,9 +73,11 @@ labels = (
 )
 ch2 = bars + labels
 
-st.write("Ward *and party*, actually.")
+st.title("Statistics for wards")
+
+st.write("(Ward-and-party combinations, actually).")
 
 st.altair_chart(ch1, use_container_width=True)
 st.altair_chart(ch2, use_container_width=True)
 
-st.write("Cllr Fosten (Belvedere Ward) elected in October 2024")
+st.write("Note: Cllr Fosten (Belvedere Ward) elected in October 2024")
